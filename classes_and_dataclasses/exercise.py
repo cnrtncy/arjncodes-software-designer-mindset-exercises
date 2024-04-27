@@ -1,6 +1,7 @@
+""" This module contains the solution for the exercise related to the dataclasses module. It creates a system for managing the customers' phone plans."""
+
 from dataclasses import dataclass, field
 from datetime import datetime
-
 from enum import Enum
 import random
 import string
@@ -26,16 +27,22 @@ def generate_serial_number(brand: str, model: str) -> str:
 
 @dataclass
 class Address:
+    """Dataclass representing an address."""
+
     street: str
     number: int
     city: str
     postal_code: str
 
     def __str__(self) -> str:
+        """Return the address in a human-readable format."""
+
         return f"{self.street} {self.number}, {self.city} {self.postal_code}"
 
 
 class Brand(Enum):
+    """Enum representing the phone brands that the Company has the inventory."""
+
     APPLE = "Apple"
     SAMSUNG = "Samsung"
     GOOGLE = "Google"
@@ -45,12 +52,16 @@ class Brand(Enum):
 
 
 class Contract(Enum):
+    """Enum representing the contract duration in months."""
+
     MINIMUM = 6
     MEDIUM = 12
     MAXIMUM = 24
 
 
 class Currency(Enum):
+    """Enum representing the currency that the Company uses for the plans. Accepted values are USD, EUR, GBP, JPY."""
+
     USD = "USD"
     EUR = "EUR"
     GBP = "GBP"
@@ -59,6 +70,8 @@ class Currency(Enum):
 
 @dataclass
 class Customer:
+    """Dataclass representing a customer which is neccessary for creating a plan. It can be extended with more fields."""
+
     name: str
     address: Address
     email: str
@@ -66,17 +79,23 @@ class Customer:
 
 @dataclass
 class Phone:
+    """Dataclass representing a phone that the Company has in the inventory."""
+
     brand: Brand
     model: str
     price: float
     serial_number: str = field(init=False)
 
     def __post_init__(self):
+        """Generate a serial number for the phone when it is created."""
+
         self.serial_number = generate_serial_number(self.brand.value, self.model)
 
 
 @dataclass
 class Plan:
+    """Dataclass representing a plan that the Company offers to the customers. It prints the details of the plan when it is created."""
+
     customer: Customer
     phone: Phone
     monthly_price: float
@@ -86,14 +105,20 @@ class Plan:
     currency: Currency = Currency.USD
 
     def __post_init__(self):
+        """Print the details of the plan when it is created."""
+
         print(f"Plan for {self.customer.name} created.")
         print(f"Plan details: {self}")
 
     def total_price(self) -> float:
+        """Calculate the total price of the plan."""
+
         return self.monthly_price * self.total_months.value
 
 
 def main() -> None:
+    """Create a plan for a customer with a phone included."""
+
     customer = Customer(
         name="John Doe",
         address=Address(
@@ -105,7 +130,7 @@ def main() -> None:
         email="johndoe@example.com",
     )
 
-    plan = Plan(
+    Plan(
         customer=customer,
         phone=Phone(brand=Brand.APPLE, model="iPhone 12", price=999.99),
         monthly_price=99.99,
